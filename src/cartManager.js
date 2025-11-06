@@ -68,8 +68,7 @@ class CartManager{
     }
   }
 
-  async addProductToCart(cid, pid, quantity){
-
+  async addProductInCart(cid, pid, quantity){
     try{
       //recuperar datos del json
       const carts = await this.getCartsFileData();
