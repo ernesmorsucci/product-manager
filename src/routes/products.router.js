@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { json } from 'express';
 import ProductManager from '../productManager.js';
 
 const productsRouter = express.Router();
@@ -27,11 +27,25 @@ productsRouter.get('/:pid', async (req, res) => {
 // Ruta para agregar un nuevo producto
 productsRouter.post('/', async (req, res) => {
   try {
-    const newProduct = req.body;
-    const products = await productManager.addProduct(newProduct);
-    res.status(201).json({ message: "Producto agregado" }, products);
+    const title = req.body.title;
+    const description = req.body.description;
+    const price = req.body.price;
+    const stock = req.body.stock;
+    const category = req.body.category;
+
+    const code = title + Math.floor(Math.random() * 1000);
+    const status = true;
+    const thumbnail = "";
+
+    const product = { title, description, code, price, status, stock, category, thumbnail }
+    let addedProduct = await productManager.addProduct(product);
+    addedProduct = addedProduct[addedProduct.length - 1];
+
+    //Enviamos un emit para renderizar el producto en el dom
+    req.io.emit('newProduct', addedProduct);
+    res.status(201).json({ message: "Producto agregado" }, product);
   } catch (error) {
-    res.status(500).json({ error: 'Error al agregar el producto' });
+    res.status(500).json({ error: error.message });
   }
 })
 
@@ -41,6 +55,9 @@ productsRouter.put('/:pid', async (req, res) => {
     const pid = req.params.pid;
     const updates = req.body;
     const products = await productManager.setProductById(pid, updates);
+    
+    //Enviamos un emit para actualizar el producto en el dom
+    req.io.emit('updatedProduct', await productManager.getProductById(pid));
     res.status(200).json({ message: "Producto actualizado" }, products);  
   } catch (error) {
     res.status(500).json({ error: 'Error al actualizar el producto' });
@@ -51,10 +68,13 @@ productsRouter.put('/:pid', async (req, res) => {
 productsRouter.delete('/:pid', async (req, res) => {
   try {
     const pid = req.params.pid;
+
+    req.io.emit('deletedProduct', await productManager.getProductById(pid));
     const products = await productManager.deleteProductById(pid);
+  
     res.status(200).json({ message: "Producto eliminado" }, products);
   } catch (error) {
-    res.status(500).json({ error: 'Error al eliminar el producto' });
+    res.status(500).json({ error: error.message });
   }
 })
 
