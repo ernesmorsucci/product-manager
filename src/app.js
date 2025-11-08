@@ -6,7 +6,6 @@ import { Server } from 'socket.io';
 import viewsRouter from './routes/views.router.js';
 import productsRouter from './routes/products.router.js';
 import cartsRouter from './routes/carts.router.js';
-import realTimeProductsRouter from './routes/realTimeProducts.router.js';
 
 //app setup
 const app = express();
