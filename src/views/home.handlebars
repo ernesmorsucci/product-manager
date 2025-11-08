@@ -1,0 +1,27 @@
+<div class="home">
+  <h1 class="home-title">HOME</h1>
+  <p class="home-description">Esta es la sección principal de productos.</p>
+
+
+  {{!-- Iteramos los productos y los mostramos si tienen estado activo --}}
+  <div class="product-grid">
+    {{#if products}}
+      {{#each products}}
+        {{#if this.status}}
+          <div class="product-card">
+            <h2 class="product-title">{{this.title}}</h2>
+            <h2 class="product-description">{{this.description}}</h2>
+            <h2 class="product-category">{{this.category}}</h2>
+            <h3 class="product-price">Precio: ${{this.price}}</h3>
+            <h3 class="product-stock">Sotck: {{this.stock}}</h3>
+          </div>
+        {{/if}}
+      {{/each}}
+    {{else}}
+      <div class="productsd-message">
+        <h1 class="message-title">No hay productos disponibles!</h1>
+        <p class="message-description">Puedes agregar un nuevo producto en la sección <a href="/realtimeproducts">Productos en tiempo real</a></p>
+      </div>
+    {{/if}}
+  </div>
+</div>
