@@ -1,35 +1,45 @@
 <div class="real-time-products-container">
-  <div>
+  <div class="form-container">
+    <h1 class="form-title">Agregar un producto</h1>
     <form id="form-product">
-      <input id="input-title" type="text" name="title" placeholder="nombre del producto">
-      <input id="input-description" type="text" name="description" placeholder="descripcion">
-      <input id="input-price" type="number" name="price" placeholder="precio">
-      <input id="input-stock" type="number" name="stock" placeholder="ingresar stock">
-      <input id="input-category" type="text" name="category" placeholder="categoria">
-      <button type="submit">Agregar producto</button>
+      <div class="form-grid">
+        <input required id="input-title" type="text" name="title" placeholder="Nombre del producto">
+        <input required id="input-description" type="text" name="description" placeholder="Descripción">
+        <input required id="input-price" type="number" name="price" placeholder="Precio">
+        <input required id="input-stock" type="number" name="stock" placeholder="Ingresar stock">
+        <input required id="input-category" type="text" name="category" placeholder="Categoria">
+        <button type="submit">Agregar producto</button>
+      </div>
     </form>
   </div>
 
   <div class="product-grid">
-    {{#each products}}
-      <div class="product-card">
-        <h2 class="product-title">{{this.title}}</h2>
-        <h3 class="product-category">{{this.category}}</h3>
-        <h3 class="product-description">{{this.description}}</h3>
-        <h3 class="product-code">Codigo: {{this.code}}</h3>
-        <h3 class="product-price">Precio: ${{this.price}}</h3>
-        <h3 class="product-stock">Stock: {{this.stock}}</h3>
-        {{#if this.status}}
-          <h3 class="product-status">Estado: Activo</h3>
-        {{else}}
-          <h3 class="product-status">Estado: Inactivo</h3>
-        {{/if}}
-        <h3 class="product-id">ID: {{this.id}}</h3>
-        <div class="product-actions">
-          <button class="delete-product-button">Eliminar producto</button>
+    {{#if products}}
+      {{#each products}}
+        <div class="product-card">
+          <h2 class="product-title">{{this.title}}</h2>
+          <h3 class="product-category">{{this.category}}</h3>
+          <h3 class="product-description">{{this.description}}</h3>
+          <h3 class="product-code">Codigo: {{this.code}}</h3>
+          <h3 class="product-price">Precio: ${{this.price}}</h3>
+          <h3 class="product-stock">Stock: {{this.stock}}</h3>
+          {{#if this.status}}
+            <h3 class="product-status">Estado: Activo</h3>
+          {{else}}
+            <h3 class="product-status">Estado: Inactivo</h3>
+          {{/if}}
+          <h3 class="product-id">ID: {{this.id}}</h3>
+          <div class="product-actions">
+            <button class="delete-product-button">Eliminar producto</button>
+          </div>
         </div>
+      {{/each}}
+    {{else}}
+      <div class="products-message">
+        <h1 class="message-title">No hay productos disponibles!</h1>
+        <p class="message-description">Prueba agregar un nuevo producto en el Formulario</p>
       </div>
-    {{/each}}
+    {{/if}}
   </div>
 </div>
 
@@ -49,6 +59,10 @@
   //Emit para agregar productos en el dom
   socket.on('newProduct', (product) => {
     const productsContainer = document.querySelector('.product-grid');
+    const messageProducts = productsContainer.querySelector('.products-message')
+    console.log(messageProducts);
+    if(messageProducts) messageProducts.remove();
+
     const productCard = document.createElement('div');
     productCard.classList.add('product-card');
     productCard.innerHTML = `
@@ -61,7 +75,7 @@
       {{#if this.status}}
         <h3 class="product-status">Estado: Activo</h3>
       {{else}}
-        <h3 class="product-status">Estado: Inactivo</h3>
+        <h3 class="product-status">Estado: ${product.status ? "Activo" : "Inactivo"}</h3>
       {{/if}}
       <h3 class="product-id">ID: ${product.id}</h3>
       <div class="product-actions">
@@ -151,28 +165,39 @@
   })
 
   //Logica de botones para eliminar productos
-  const deleteButtons = document.querySelectorAll('.delete-product-button');
-  deleteButtons.forEach(button => {
-    button.addEventListener('click', async () => {
-      const productCard = button.closest('.product-card');
+  const productGrid = document.querySelector('.product-grid');
+  productGrid.addEventListener('click', async (e) => {
+    if (!e.target.classList.contains('delete-product-button')) return; // Solo si clickeó el botón
 
-      const productId = productCard.querySelector('.product-id').textContent.slice(4);
-      try {
-        const response = await fetch(`/api/products/${productId}`, {
-        method: 'DELETE'
-        })
+    const productCard = e.target.closest('.product-card');
+    const productId = productCard.querySelector('.product-id').textContent.slice(4);
 
-        if(!response.ok) {
-        const errorData = await response.json();
-        throw new Error(`Error en la solicitud: ${response.status} - ${errorData.error}`);
-        }
-        
-        const data = await response.json();
-      } catch (error) {
-        console.log(error)
+    try {
+      const response = await fetch(`/api/products/${productId}`, { method: 'DELETE' });
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(`Error en la solicitud: ${response.status} - ${data.error || 'Error desconocido'}`);
       }
-      //Removemos el producto del dom
+
+      console.log('Producto eliminado:', data);
       productCard.remove();
-    });
+
+      //Si no hay productos mostramos el mensaje nuevamente
+      const productsContainer = document.querySelector('.product-grid');
+      const remainingProducts = productsContainer.querySelectorAll('.product-card').length;
+
+      if (remainingProducts === 0) {
+        const messageDiv = document.createElement('div');
+        messageDiv.classList.add('products-message');
+        messageDiv.innerHTML = `
+          <h1 class="message-title">No hay productos disponibles!</h1>
+          <p class="message-description">Prueba agregar un nuevo producto en el Formulario</p>
+        `;
+        productsContainer.appendChild(messageDiv);
+      }
+    } catch (error) {
+      console.error('Error al eliminar el producto:', error);
+    }
   });
 </script>
