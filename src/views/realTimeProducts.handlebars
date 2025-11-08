@@ -1,0 +1,178 @@
+<div class="real-time-products-container">
+  <div>
+    <form id="form-product">
+      <input id="input-title" type="text" name="title" placeholder="nombre del producto">
+      <input id="input-description" type="text" name="description" placeholder="descripcion">
+      <input id="input-price" type="number" name="price" placeholder="precio">
+      <input id="input-stock" type="number" name="stock" placeholder="ingresar stock">
+      <input id="input-category" type="text" name="category" placeholder="categoria">
+      <button type="submit">Agregar producto</button>
+    </form>
+  </div>
+
+  <div class="product-grid">
+    {{#each products}}
+      <div class="product-card">
+        <h2 class="product-title">{{this.title}}</h2>
+        <h3 class="product-category">{{this.category}}</h3>
+        <h3 class="product-description">{{this.description}}</h3>
+        <h3 class="product-code">Codigo: {{this.code}}</h3>
+        <h3 class="product-price">Precio: ${{this.price}}</h3>
+        <h3 class="product-stock">Stock: {{this.stock}}</h3>
+        {{#if this.status}}
+          <h3 class="product-status">Estado: Activo</h3>
+        {{else}}
+          <h3 class="product-status">Estado: Inactivo</h3>
+        {{/if}}
+        <h3 class="product-id">ID: {{this.id}}</h3>
+        <div class="product-actions">
+          <button class="delete-product-button">Eliminar producto</button>
+        </div>
+      </div>
+    {{/each}}
+  </div>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+  //iniciar socket del cliente
+  const socket = io();
+
+  //Recibimos mensaje para testear conexion
+  socket.on('mensaje', message => {
+    console.log(message);
+  })
+  
+  //Enviamos mensaje al servidor para confirmar conexion
+  socket.emit('mensajeCliente', 'Hola desde el cliente');
+
+  //Emit para agregar productos en el dom
+  socket.on('newProduct', (product) => {
+    const productsContainer = document.querySelector('.product-grid');
+    const productCard = document.createElement('div');
+    productCard.classList.add('product-card');
+    productCard.innerHTML = `
+      <h2 class="product-title">${product.title}</h2>
+      <h3 class="product-category">${product.category}</h3>
+      <h3 class="product-description">${product.description}</h3>
+      <h3 class="product-code">Codigo: ${product.code}</h3>
+      <h3 class="product-price">Precio: $${product.price}</h3>
+      <h3 class="product-stock">Stock: ${product.stock}</h3>
+      {{#if this.status}}
+        <h3 class="product-status">Estado: Activo</h3>
+      {{else}}
+        <h3 class="product-status">Estado: Inactivo</h3>
+      {{/if}}
+      <h3 class="product-id">ID: ${product.id}</h3>
+      <div class="product-actions">
+        <button class="delete-product-button">Eliminar producto</button>
+      </div>
+    `;
+    productsContainer.appendChild(productCard);
+  })
+
+  //Emit para borrar productos
+  socket.on('deletedProduct', (product) => {
+    console.log({ message: "producto eliminado", product })
+  })
+
+  //Emit para actualizar productos desde postman
+  socket.on('updatedProduct', (product) => {
+    const productsCard = document.querySelectorAll('.product-card');
+
+    productsCard.forEach((p) => {
+      const productId = p.querySelector('.product-id').textContent.slice(4);
+
+      if (productId === product.id) {
+        p.innerHTML = `
+          <h2 class="product-title">${product.title}</h2>
+          <h3 class="product-category">${product.category}</h3>
+          <h3 class="product-description">${product.description}</h3>
+          <h3 class="product-code">Codigo: ${product.code}</h3>
+          <h3 class="product-price">Precio: $${product.price}</h3>
+          <h3 class="product-stock">Stock: ${product.stock}</h3>
+          {{#if this.status}}
+            <h3 class="product-status">Estado: Activo</h3>
+          {{else}}
+            <h3 class="product-status">Estado: Inactivo</h3>
+          {{/if}}
+          <h3 class="product-id">ID: ${product.id}</h3>
+          <div class="product-actions">
+            <button class="delete-product-button">Eliminar producto</button>
+          </div>
+        `;
+      } else {
+        throw new Error({ message: 'El producto no existe' })
+      }
+    })
+  })
+
+  //Capturamos el formulario
+  const formProduct = document.getElementById('form-product');
+
+  //Evento para gregar productos
+  formProduct.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const title = document.getElementById('input-title').value;
+    const description = document.getElementById('input-description').value;
+    const price = document.getElementById('input-price').value;
+    const stock = document.getElementById('input-stock').value;
+    const category = document.getElementById('input-category').value;
+
+    const product = {
+      title,
+      description,
+      price,
+      stock,
+      category
+    }
+    
+    try{
+      const response = await fetch('/api/products', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(product)
+      });
+
+      if(!response.ok) {
+        const errorData = await response.json();
+        throw new Error(`Error en la solicitud: ${response.status} - ${errorData.error}`);
+      }
+
+      const data = await response.json();
+    } catch (error) {
+      console.log(error);
+    }
+    //Reseteamos el formulario
+    formProduct.reset();
+  })
+
+  //Logica de botones para eliminar productos
+  const deleteButtons = document.querySelectorAll('.delete-product-button');
+  deleteButtons.forEach(button => {
+    button.addEventListener('click', async () => {
+      const productCard = button.closest('.product-card');
+
+      const productId = productCard.querySelector('.product-id').textContent.slice(4);
+      try {
+        const response = await fetch(`/api/products/${productId}`, {
+        method: 'DELETE'
+        })
+
+        if(!response.ok) {
+        const errorData = await response.json();
+        throw new Error(`Error en la solicitud: ${response.status} - ${errorData.error}`);
+        }
+        
+        const data = await response.json();
+      } catch (error) {
+        console.log(error)
+      }
+      //Removemos el producto del dom
+      productCard.remove();
+    });
+  });
+</script>
