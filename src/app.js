@@ -1,10 +1,13 @@
-//imports
+// modules
 import express from 'express';
 import http from 'http';
 import { engine } from 'express-handlebars';
+// routes
 import viewsRouter from './routes/views.router.js';
 import productsRouter from './routes/products.router.js';
 import cartsRouter from './routes/carts.router.js';
+//config
+import connectMongoDB from './config/db.js';
 
 //app setup
 const app = express();
@@ -21,6 +24,9 @@ app.use(express.urlencoded({ extended: true }));
 app.engine('handlebars', engine());
 app.set('view engine', 'handlebars');
 app.set('views', './src/views');
+
+//database conection
+connectMongoDB();
 
 //routes
 app.use('/', viewsRouter);
