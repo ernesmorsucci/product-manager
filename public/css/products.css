@@ -1,0 +1,204 @@
+/* ------------------ */
+/*  GENERAL LAYOUT    */
+/* ------------------ */
+
+body {
+  font-family: "Inter", Arial, sans-serif;
+  background: #f8fafc;
+  margin: 0;
+  padding: 0;
+  color: #1e293b;
+}
+
+main {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 2rem;
+}
+
+/* ------------------ */
+/*      HOME PAGE     */
+/* ------------------ */
+
+.home-title {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: #1d4ed8;
+  margin-bottom: 0.5rem;
+}
+
+.home-description {
+  font-size: 1.1rem;
+  color: #475569;
+  margin-bottom: 2rem;
+}
+
+/* GRID DE PRODUCTOS */
+
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1.5rem;
+}
+
+/* ------------------ */
+/*  PRODUCT CARDS     */
+/* ------------------ */
+
+.product-card {
+  cursor: pointer;
+  background: white;
+  border-radius: 12px;
+  padding: 1.2rem;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
+  transition: 0.2s ease;
+  border: 1px solid #e2e8f0;
+}
+
+.product-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 14px rgba(0, 0, 0, 0.12);
+}
+
+/* HEADER TARJETA */
+.product-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.product-title {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #0f172a;
+  margin: 0;
+}
+
+.product-category {
+  background: #dbeafe;
+  color: #1d4ed8;
+  padding: 0.2rem 0.6rem;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+/* DESCRIPCIÓN */
+
+.product-description {
+  margin: 0.8rem 0;
+  color: #475569;
+  font-size: 0.95rem;
+}
+
+/* INFO */
+.product-info {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 0.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.product-price {
+  color: #16a34a;
+}
+
+.product-stock {
+  color: #334155;
+}
+
+/* DATA ADICIONAL */
+.product-code {
+  font-size: 0.9rem;
+  color: #64748b;
+  margin-top: 0.6rem;
+}
+
+/* ------------------ */
+/*     PAGINATION     */
+/* ------------------ */
+
+.pagination {
+  margin-top: 2rem;
+  text-align: center;
+}
+
+.page-link {
+  display: inline-block;
+  margin: 0 0.5rem;
+  padding: 0.6rem 1rem;
+  text-decoration: none;
+  background: #e2e8f0;
+  color: #1e293b;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: 0.2s ease;
+}
+
+.page-link:hover {
+  background: #cbd5e1;
+}
+
+/* ------------------ */
+/*   PRODUCT PAGE     */
+/* ------------------ */
+
+/* CONTENEDOR DEL FORMULARIO */
+.product-action {
+  display: flex;
+  justify-content: center;
+}
+
+#addToCart {
+  width: 100%;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* INPUTS */
+#addToCart input {
+  padding: 10px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+/* BOTÓN */
+#addToCart button {
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  background: #2563eb;
+  color: white;
+  font-weight: bold;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background .2s ease;
+}
+
+#addToCart button:hover {
+  background: #1d4ed8;
+}
+
+
+/* ------------------ */
+/*   PAGINACIÓN LINKS */
+/* ------------------ */
+
+.product-grid a {
+  display: inline-block;
+  margin-top: 1rem;
+  background: #e2e8f0;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  text-decoration: none;
+  color: #1e293b;
+  transition: 0.2s ease;
+}
+
+.product-grid a:hover {
+  background: #cbd5e1;
+}

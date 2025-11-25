@@ -1,0 +1,26 @@
+<div>
+  <div class="product-card">
+    <div class="product-header">
+      <h2 class="product-title">{{product.title}}</h2>
+      <span class="product-category">{{product.category}}</span>
+    </div>
+    <p class="product-description">{{product.description}}</p>
+    <div class="product-info">
+      <span class="product-price">$ {{product.price}}</span>
+      <span class="product-stock">Stock: {{product.stock}}</span>
+    </div>
+    <div class="product-data">
+      <h3 class="product-code">Codigo: {{product.code}}</h3>
+      <span class="product-id" hidden>{{product._id}}</span>
+    </div>
+    <div class="product-action">
+      <form id="addToCart">
+        <input type="text" name="cartId" id="cartId" required placeholder="Id del Carrito">
+        <input type="number" name="quantity" id="quantity" min="1" max="{{product.stock}}" required placeholder="Cantidad">
+        <button type="submit">Agregar al carrito</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script src="/js/product.js"></script>

@@ -1,0 +1,31 @@
+<div>
+  <h1 id="cart-id">Carrito {{cart._id}}</h1>
+  {{#if cart.products}}
+  Productos en el carrito:
+  {{#each cart.products}}
+    <div class="product-item">
+      <div class="product-info">
+        <div class="product-title-block">
+          <h4 class="product-title">Producto: {{this.product.title}}</h4>
+          <span class="product-category">{{this.product.category}}</span>
+        </div>
+      </div>
+      <div class="product-data">
+        <p>Precio: {{this.product.price}}</p>
+        <p>Cantidad: {{this.quantity}}</p>
+        <p id="product-id" hidden>{{this.product._id}}</p>
+      </div>
+      <div class="product-actions">
+        <button class="btn-eliminar" id="btn-eliminar">Eliminar</button>
+      </div>
+    </div>
+  {{/each}}
+  <div class="cart-actions">
+    <button class="btn-vaciar" id="btn-vaciar">Vaciar Carrito</button>
+  </div>
+  {{else}}
+    <p>El carrito está vacío.</p>
+  {{/if}}
+</div>
+
+<script src="/js/singleCart.js"></script>
