@@ -77,7 +77,6 @@ cartsRouter.put('/:cid/products/:pid', async(req, res) => {
     res.status(200).json({ status: "success", payload: cart });
   } catch(error){
     res.status(500).json({ status: "error", message: "error al actualizar un producto del carrito" });
-    console.log(error)
   }
 });
 
@@ -97,7 +96,6 @@ cartsRouter.delete('/:cid/products/:pid', async(req, res) => {
     res.status(200).json({ status: "success", payload: cart });
   } catch(error){
     res.status(500).json({ status: "success", message: "error al eliminar el producto" });
-    console.log(error);
   }
 });
 
@@ -114,7 +112,19 @@ cartsRouter.delete('/:cid/products', async(req, res) => {
     res.status(200).json({ status: "success", payload: cart });
   } catch(error){
     res.status(500).json({ status: "error", message: "error al vaciar el carrito" });
-    console.log(error);
+  }
+});
+
+cartsRouter.delete('/:cid/delete', async(req, res) => {
+  try{
+    const { cid } = req.params;
+
+    const deletedCart = await Cart.findByIdAndDelete(cid);
+    if(!deletedCart) return res.status(404).json({ status: "error", message: "carrito no encontrado" }); 
+
+    res.status(200).json({ status: "success", payload: deletedCart });
+  } catch(error){
+    res.status(500).json({ status: "error", message: "error al eliminar el carrito" });
   }
 });
 

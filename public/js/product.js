@@ -5,7 +5,7 @@ form.addEventListener('submit', async(e) => {
   e.preventDefault();
 
   const cid = document.getElementById('cartId');
-  const quantity = document.getElementById('quantity').value;
+  const quantity = document.getElementById('quantity');
 
   console.log("PID obtenido desde la vista:", pid);
 
@@ -17,17 +17,32 @@ form.addEventListener('submit', async(e) => {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ quantity: quantity })
+      body: JSON.stringify({ quantity: quantity.value })
     });
     if (response.ok) {
       const data = await response.json();
       console.log(data);
-      window.location.reload();
+      Swal.fire({
+          icon: "success",
+          text: "Producto agregado al carrito!",
+          confirmButtonColor: '#2563eb'
+        });
+      cid.value = '';
+      quantity.value = '';
     } else {
       if (response.status === 400){
-        cid.value = 'El producto ya está en el carrito!';
+        Swal.fire({
+          icon: "error",
+          text: "El producto ya está en el carrito!",
+          confirmButtonColor: '#ef4444'
+        });
       } else{
-        cid.value = 'Ingresa un ID de carrito válido!';
+        cid.value = '';
+        Swal.fire({
+          icon: "error",
+          text: "Ingresa un ID de carrito válido!",
+          confirmButtonColor: '#ef4444'
+        });
       }
     }
   } catch(error){

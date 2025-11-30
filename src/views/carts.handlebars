@@ -1,5 +1,6 @@
 <div>
-  <h1>Carritos</h1>
+  <h1 class="carts-title">Carritos</h1>
+
   {{#if carts}}
     <p>Lista de carritos:</p>
     <ul class="cart-list">
@@ -7,22 +8,25 @@
         <li class="cart-card">
           <h2 class="cart-id">Carrito ID: {{this._id}}</h2>
           {{#if this.products}}
-          <p>Productos:</p>
-          <ul class="product-list">
-            {{#each this.products}}
-              <li>{{this.product.title}} - Cantidad: {{this.quantity}}</li>
-            {{/each}}
-          </ul>
+            <p>Productos:</p>
+            <ul class="product-list">
+              {{#each this.products}}
+                <li>{{this.product.title}} - Cantidad: {{this.quantity}}</li>
+              {{/each}}
+            </ul>
           {{else}}
-          <p>El carrito está vacío.</p>
+            <p>El carrito está vacío.</p>
           {{/if}}
+          <div class="cart-action">
+            <button class="btn-eliminar-cart" id="btn-eliminar">Eliminar carrito</button>
+          </div>
         </li>
       {{/each}}
     </ul>
   {{else}}
     <p>No hay carritos disponibles.</p>
   {{/if}}
-  <div>
+  <div class="create-cart-action">
     <button id="btn-crear">Crear carrito</button>
   </div>
 </div>

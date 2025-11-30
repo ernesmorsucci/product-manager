@@ -1,4 +1,4 @@
-/* ========== RESET ========== */
+/* reset */
 * {
   margin: 0;
   padding: 0;
@@ -12,14 +12,7 @@ body {
   line-height: 1.5;
 }
 
-/* ========== CONTAINERS ========== */
-.container {
-  max-width: 1100px;
-  margin: auto;
-  padding: 0 20px;
-}
-
-/* ========== NAVBAR ========== */
+/* navbar*/
 .main-header {
   background: white;
   padding: 15px 0;
@@ -57,12 +50,12 @@ body {
   color: #1976d2;
 }
 
-/* ========== MAIN ========== */
+/* main */
 .main {
   margin-bottom: 40px;
 }
 
-/* ========== FOOTER ========== */
+/* footer */
 .main-footer {
   text-align: center;
   padding: 15px 0;
