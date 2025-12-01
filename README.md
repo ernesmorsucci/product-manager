@@ -1,6 +1,6 @@
 # 🛍️ Product Manager
 
-Aplicación web desarrollada con **Node.js**, **Express**, **MongoDB**, **Mongoose** y **Handlebars** .  
+Aplicación web desarrollada con **Node.js**, **Express**, **MongoDB**, **Mongoose** y **Handlebars**.  
 Este proyecto simula un sistema de administración de productos y carritos con persistencia en archivos en base de datos Mongo. Cuenta con interfaz visual, manejo de archivos públicos, rutas API REST y vistas dinámicas.
 
 ---
@@ -21,7 +21,7 @@ Este proyecto simula un sistema de administración de productos y carritos con p
 ## 🚀 Características principales
 
 - Visualización de productos y manejo de carritos desde interfaz web.  
-- Alertas personalizadas con Sweeralert2.
+- Alertas personalizadas con `Sweetalert2`.
 - Administración productos y manejar carritos con `Postman`. 
 - Manejo de datos persistentes mediante base de datos Mongo y Mongoose.
 ---
@@ -63,7 +63,7 @@ Este proyecto simula un sistema de administración de productos y carritos con p
 4. **Abrir en el navegador**
 
    ```bash
-   http://localhost:8080/
+   http://localhost:8080
 
 ---
 
@@ -77,7 +77,7 @@ Este proyecto simula un sistema de administración de productos y carritos con p
    │   │   ├── carts.css          # Estilos para views de carritos
    │   │   ├── error.css          # Estilos pantalla de error
    │   │   ├── products.css       # Estilos para views de productos
-   │   │   ├── style.css          # Estilos generales del sitio
+   │   │   ├── style.css          # Estilos generales, navbar  y footer
    │   ├── js/
    │       ├── carts.js           # Lógica de manejo de carritos
    │       ├── home.js            # Scripts de Home
@@ -111,17 +111,17 @@ Este proyecto simula un sistema de administración de productos y carritos con p
 ---
 
 <a id="5"></a>
-## 💡 Endpoints Principales
+## 💡 Endpoints API REST
 
 ### 📦 Productos
 
 | Método   | Endpoint             | Descripción                                  |
 | -------- | -------------------- | -------------------------------------------- |
-| `GET`    | `/api/products`      | Obtiene todos los productos con paginacion   |
-| `GET`    | `/api/products/:pid` | Obtiene un producto por su ID (solo Postman) |
+| `GET`    | `/api/products`      | Lista todos los productos con paginacion     |
+| `GET`    | `/api/products/:pid` | Obtiene un producto por su id                |
 | `POST`   | `/api/products`      | Agrega un nuevo producto                     |
-| `PUT`    | `/api/products/:pid` | Edita un producto por ID (solo Postman)      |
-| `DELETE` | `/api/products/:pid` | Elimina un producto por ID                   |
+| `PUT`    | `/api/products/:pid` | Actualiza un producto                        |
+| `DELETE` | `/api/products/:pid` | Elimina un producto                          |
 
 ### 🛒 Carritos
 
@@ -165,6 +165,5 @@ Nota: Los endpoints para carritos se utilizan en Postman.
 ### 🧠 Autor
 
 **Ernesto Morsucci**.<br>
-[Repositorio](https://github.com/ernesmorsucci/product-manager).<br>
 📍 Mendoza, Argentina.<br>
 🔗 [GitHub](https://github.com/ernesmorsucci).
