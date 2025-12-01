@@ -1,7 +1,7 @@
 # 🛍️ Product Manager
 
-Aplicación web desarrollada con **Node.js**, **Express** y **Handlebars** que permite gestionar productos en tiempo real mediante **Socket.io**.  
-Este proyecto simula un sistema de administración de productos con persistencia en archivos JSON y comunicación dinámica entre cliente y servidor.
+Aplicación web desarrollada con **Node.js**, **Express**, **MongoDB**, **Mongoose** y **Handlebars** .  
+Este proyecto simula un sistema de administración de productos y carritos con persistencia en archivos en base de datos Mongo. Cuenta con interfaz visual, manejo de archivos públicos, rutas API REST y vistas dinámicas.
 
 ---
 
@@ -20,14 +20,10 @@ Este proyecto simula un sistema de administración de productos con persistencia
 <a id="1"></a>
 ## 🚀 Características principales
 
-- Visualización de productos en tiempo real.  
-- Alta y baja de productos desde la interfaz web.  
-- Eliminación instantánea sin necesidad de recargar la página.  
-- Actualizar productos y manejar carritos con `Postman`. 
-- Manejo de datos persistentes mediante archivos JSON.  
-- Generación de IDs únicos con el módulo nativo `crypto`.  
-- Comunicación bidireccional cliente-servidor con `Socket.io`.
-
+- Visualización de productos y manejo de carritos desde interfaz web.  
+- Alertas personalizadas con Sweeralert2.
+- Administración productos y manejar carritos con `Postman`. 
+- Manejo de datos persistentes mediante base de datos Mongo y Mongoose.
 ---
 
 <a id="2"></a>
@@ -38,9 +34,9 @@ Este proyecto simula un sistema de administración de productos con persistencia
 | Node.js | Entorno de ejecución del servidor |
 | Express.js | Framework web backend |
 | Handlebars | Motor de plantillas para vistas dinámicas |
-| Socket.io | Comunicación en tiempo real |
-| File System (fs) | Lectura/escritura de archivos locales |
-| Crypto | Generación de identificadores únicos |
+| MongoDB y Mongoose | Persistencia de datos |
+| Mongoose-paginate-v2 | Paginación de productos |
+| Sweeralert2 | Personalización de alertas |
 | HTML5, CSS3 y JavaScript | Interfaz de usuario |
 
 ---
@@ -75,30 +71,41 @@ Este proyecto simula un sistema de administración de productos con persistencia
 ## 📁 Estructura del Proyecto
 
    ```pgsql
-  product-manager/
-  │
-  ├── src/
-  │   ├── app.js                     # Configuración principal del servidor Express y Socket.io
-  │   ├── productManager.js          # Lógica para manejo de productos
-  │   ├── cartManager.js             # Lógica para manejo de carritos
-  │   ├── routes/
-  │   │   ├── products.router.js     # Rutas de productos
-  │   │   └── carts.router.js        # Rutas de carritos
-  │   │   └── views.router.js        # Rutas de views
-  │   ├── data/
-  │   │   ├── products.json          # Persistencia de datos para productos
-  │   │   └── carts.json             # Persistencia de datos para carritos
-  │   ├── views/
-  │   │   ├── layouts/
-  │   │   │   └── index.handlebars   # Layout principal
-  │   │   ├── home.handlebars        # View principal (Home)
-  │   │   └── realTimeProducts.handlebars # View de productos en tiempo real
-  │   └── public/
-  │       └── css/
-  │           └── styles.css         # Estilos globales
-  │
-  ├── package.json
-  └── README.md
+   product-manager/
+   ├── public/
+   │   ├── css/
+   │   │   ├── carts.css          # Estilos para views de carritos
+   │   │   ├── error.css          # Estilos pantalla de error
+   │   │   ├── products.css       # Estilos para views de productos
+   │   │   ├── style.css          # Estilos generales del sitio
+   │   ├── js/
+   │       ├── carts.js           # Lógica de manejo de carritos
+   │       ├── home.js            # Scripts de Home
+   │       ├── product.js         # Funciones de productos
+   │       ├── singleCart.js      # Manejo de carrito individual
+   │
+   ├── src/
+   │   ├── app.js                 # Configuracion del servidor
+   │   ├── config/db.js           # Conexión a MongoDB
+   │   ├── models/
+   │   │   ├── cart.model.js      # Esquema de carrito
+   │   │   ├── product.model.js   # Esquema de producto
+   │   ├── routes/
+   │       ├── carts.router.js    # Endpoints API carritos
+   │       ├── products.router.js # Endpoints API productos
+   │       ├── views.router.js    # Endpoints views con Handlebars
+   │
+   ├── views/
+   │   ├── layouts/
+   │   │   ├── main.handlebars    # Layout principal
+   │   ├── carts.handlebars       # Vista listado de carritos
+   │   ├── error.handlebars       # Vista error
+   │   ├── home.handlebars        # Página principal
+   │   ├── product.handlebars     # Vista de productos
+   │   ├── singleCart.handlebars  # Vista de carrito individual
+   │
+   ├── package.json
+   ├── README.md
 ```
 
 ---
@@ -110,7 +117,7 @@ Este proyecto simula un sistema de administración de productos con persistencia
 
 | Método   | Endpoint             | Descripción                                  |
 | -------- | -------------------- | -------------------------------------------- |
-| `GET`    | `/api/products`      | Obtiene todos los productos                  |
+| `GET`    | `/api/products`      | Obtiene todos los productos con paginacion   |
 | `GET`    | `/api/products/:pid` | Obtiene un producto por su ID (solo Postman) |
 | `POST`   | `/api/products`      | Agrega un nuevo producto                     |
 | `PUT`    | `/api/products/:pid` | Edita un producto por ID (solo Postman)      |
@@ -123,6 +130,10 @@ Este proyecto simula un sistema de administración de productos con persistencia
 | `GET`  | `/api/carts/:cid/products`      | Lista todos los productos de un carrito |
 | `POST` | `/api/carts`                    | Crea un nuevo carrito                   |
 | `POST` | `/api/carts/:cid/products/:pid` | Agrega un producto a un carrito         |
+| `PUT`  | `/api/carts/:cid/products/:pid` | Actualiza la cantida de un producto en el carrito |
+| `DELETE` | `/api/carts/:cid/products/:pid` | Elimina un producto de un carrito     |
+| `DELETE` | `/api/carts/:cid/products/`   | Vacia el carrito                        |
+| `DELETE` | `/api/carts/:cid/delete`      | Elimina un carrito                      |
 
 Nota: Los endpoints para carritos se utilizan en Postman.
 
@@ -135,9 +146,18 @@ Nota: Los endpoints para carritos se utilizan en Postman.
   * Muestra todos los productos activos.
   * Sección principal de la aplicación.
 
-### RealTimeProducts
-  * Permite agregar y eliminar productos en tiempo real.
-  * El contenido se actualiza automáticamente mediante WebSockets.
+### Products/id
+  * Muestra el detalle de un producto.
+  * Contiene formulario para agregar al carrito.
+
+### Carts
+  * Lista todos los carritos.
+  * Permite crear carritos con un botón.
+
+### Carts/id
+  * Muestra el detalle de un carrito y sus productos agregados.
+  * Permite eliminar un producto del carrito.
+  * Cuenta con botón para vaciar el carrito.
 
 ---
 
